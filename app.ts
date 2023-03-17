@@ -1,33 +1,40 @@
 // Canvas
 const { body } = document;
-const canvas = document.createElement("canvas");
+const canvas = document.createElement("canvas") as HTMLCanvasElement;
 const context = canvas.getContext("2d");
-const width = 500;
-const height = 630;
-const screenWidth = window.screen.width;
-const canvasPosition = screenWidth / 2 - width / 2;
-const isMobile = window.matchMedia("(max-width: 600px)");
-const gameOverEl = document.createElement("div");
+const width: number = 500;
+const height: number = 630;
+const screenWidth: number = window.screen.width;
+const canvasPosition: number = screenWidth / 2 - width / 2;
+const isMobile: any = window.matchMedia("(max-width: 600px)");
+const gameOverEl = document.createElement("div") as HTMLElement;
 
 // Paddle
 const paddleHeight = 10;
 const paddleWidth = 50;
 const paddleDiff = 25;
-let paddleBottomX = 225;
-let paddleTopX = 225;
-let playerMoved = false;
-let paddleContact = false;
+let paddleBottomX: number = 225;
+let paddleTopX: number = 225;
+let playerMoved: boolean = false;
+let paddleContact: boolean = false;
 
 // Ball
-let ballX = 250;
-let ballY = 315;
+let ballX: number = 250;
+let ballY: number = 315;
 const ballRadius = 5;
 
 // Speed
-let speedY;
-let speedX;
-let trajectoryX;
-let computerSpeed;
+let speedY: number;
+let speedX: number;
+let trajectoryX: number;
+let computerSpeed: number;
+
+// Score
+let playerScore: number = 0;
+let computerScore: number = 0;
+const winningScore: number = 7;
+let isGameOver: boolean = true;
+let isNewGame: boolean = true;
 
 // Change Mobile Settings
 if (isMobile.matches) {
@@ -40,45 +47,40 @@ if (isMobile.matches) {
   computerSpeed = 3;
 }
 
-// Score
-let playerScore = 0;
-let computerScore = 0;
-const winningScore = 7;
-let isGameOver = true;
-let isNewGame = true;
-
 // Render Everything on Canvas
 function renderCanvas() {
-  // Canvas Background
-  context.fillStyle = "black";
-  context.fillRect(0, 0, width, height);
+  if (context !== null) {
+    // Canvas Background
+    context.fillStyle = "black";
+    context.fillRect(0, 0, width, height);
 
-  // Paddle Color
-  context.fillStyle = "white";
+    // Paddle Color
+    context.fillStyle = "white";
 
-  // Player Paddle (Bottom)
-  context.fillRect(paddleBottomX, height - 20, paddleWidth, paddleHeight);
+    // Player Paddle (Bottom)
+    context.fillRect(paddleBottomX, height - 20, paddleWidth, paddleHeight);
 
-  // Computer Paddle (Top)
-  context.fillRect(paddleTopX, 10, paddleWidth, paddleHeight);
+    // Computer Paddle (Top)
+    context.fillRect(paddleTopX, 10, paddleWidth, paddleHeight);
 
-  // Dashed Center Line
-  context.beginPath();
-  context.setLineDash([4]);
-  context.moveTo(0, 315);
-  context.lineTo(500, 315);
-  context.strokeStyle = "grey";
-  context.stroke();
+    // Dashed Center Line
+    context.beginPath();
+    context.setLineDash([4]);
+    context.moveTo(0, 315);
+    context.lineTo(500, 315);
+    context.strokeStyle = "grey";
+    context.stroke();
 
-  // Ball
-  context.beginPath();
-  context.arc(ballX, ballY, ballRadius, 2 * Math.PI, false);
-  context.fillStyle = "white";
-  context.fill();
-  // Score
-  context.font = "32px Courier New";
-  context.fillText(playerScore, 20, canvas.height / 2 + 50);
-  context.fillText(computerScore, 20, canvas.height / 2 - 30);
+    // Ball
+    context.beginPath();
+    context.arc(ballX, ballY, ballRadius, 2 * Math.PI, +false);
+    context.fillStyle = "white";
+    context.fill();
+    // Score
+    context.font = "32px Courier New";
+    context.fillText(`${playerScore}`, 20, canvas.height / 2 + 50);
+    context.fillText(`${computerScore}`, 20, canvas.height / 2 - 30);
+  }
 }
 
 // Create Canvas Element
@@ -160,8 +162,6 @@ function ballBoundaries() {
   }
 }
 
-// ============================= //
-
 // Computer Movement
 function computerAI() {
   if (playerMoved) {
@@ -172,8 +172,6 @@ function computerAI() {
     }
   }
 }
-
-// ============================= //
 
 // Start Game, Reset Everything
 function startGame() {
@@ -213,7 +211,7 @@ function gameOver() {
   }
 }
 
-function showGameOverEl(winner) {
+function showGameOverEl(winner: string) {
   // Hide Canvas
   canvas.hidden = true;
   // Container
@@ -231,8 +229,6 @@ function showGameOverEl(winner) {
   body.appendChild(gameOverEl);
 }
 
-// ============================ //
-
 // Called Every Frame
 function animate() {
   renderCanvas();
@@ -244,6 +240,7 @@ function animate() {
   computerAI();
   gameOver();
 
+  //  stop animation when the game stops
   !isGameOver ? window.requestAnimationFrame(animate) : null;
 }
 
